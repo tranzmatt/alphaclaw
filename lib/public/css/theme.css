@@ -1,16 +1,21 @@
 :root {
-  --bg: #0a0e14;
-  --bg-sidebar: #0d1117;
-  --bg-content: #0a0e14;
+  --bg: #0d121b;
+  --bg-sidebar: #111826;
+  --bg-content: #0f1521;
   --bg-hover: rgba(99, 235, 255, 0.05);
   --bg-active: rgba(99, 235, 255, 0.08);
   --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.11);
   --text: #c9d1d9;
   --text-muted: #6e7681;
   --text-dim: #383d47;
   --accent: #63ebff;
   --accent-dim: rgba(99, 235, 255, 0.4);
   --accent-link: rgba(99, 235, 255, 0.6);
+  --panel-bg-contrast: rgba(255, 255, 255, 0.028);
+  --panel-border-contrast: rgba(255, 255, 255, 0.11);
+  --field-bg-contrast: rgba(0, 0, 0, 0.3);
+  --field-border-contrast: rgba(255, 255, 255, 0.13);
 }
 
 html, body { height: 100%; }
@@ -29,11 +34,35 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
   background-size: 48px 48px;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Unified panel treatment across tabs/pages. */
+.bg-surface {
+  background: var(--panel-bg-contrast) !important;
+  border-color: var(--panel-border-contrast) !important;
+}
+
+.border-border {
+  border-color: var(--panel-border-contrast) !important;
+}
+
+/* Universal field contrast treatment (all tabs/pages). */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea {
+  background: var(--field-bg-contrast);
+  border-color: var(--field-border-contrast);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 ::placeholder { color: var(--text-dim) !important; opacity: 1 !important; }

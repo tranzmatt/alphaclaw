@@ -19,8 +19,10 @@
 /* ── Sidebar ───────────────────────────────────── */
 
 .app-sidebar {
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.012) 100%),
+    var(--bg-sidebar);
+  border-right: 1px solid var(--border-strong);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -113,7 +115,7 @@
 .app-statusbar {
   grid-column: 1 / -1;
   background: var(--bg-sidebar);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: space-between;

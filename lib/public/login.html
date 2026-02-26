@@ -67,6 +67,10 @@
       </form>
     </div>
     <script>
+      try {
+        window.localStorage?.clear?.();
+      } catch {}
+
       const formEl = document.getElementById("login-form");
       const passwordEl = document.getElementById("password");
       const submitButtonEl = document.getElementById("submit-btn");
