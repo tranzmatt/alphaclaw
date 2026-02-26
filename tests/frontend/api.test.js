@@ -2,6 +2,8 @@ const loadApiModule = async () => import("../../lib/public/js/lib/api.js");
 
 const mockJsonResponse = (status, payload) => ({
   status,
+  ok: status >= 200 && status < 300,
+  text: async () => JSON.stringify(payload),
   json: async () => payload,
 });
 
@@ -60,5 +62,14 @@ describe("frontend/api", () => {
       body: JSON.stringify({ vars }),
     });
     expect(result).toEqual({ ok: true, changed: true });
+  });
+
+  it("saveEnvVars throws server error on non-OK response", async () => {
+    global.fetch.mockResolvedValue(mockJsonResponse(400, { error: "Reserved env var" }));
+    const api = await loadApiModule();
+
+    await expect(api.saveEnvVars([{ key: "PORT", value: "3000" }])).rejects.toThrow(
+      "Reserved env var",
+    );
   });
 });

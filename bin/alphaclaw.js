@@ -106,19 +106,41 @@ try {
 }
 
 // ---------------------------------------------------------------------------
-// 4. Seed .env from template if missing; load into process.env
+// 4. Ensure shared ~/data/.env exists (seed from template if missing)
 // ---------------------------------------------------------------------------
 
 const envFilePath = path.join(rootDir, ".env");
+const sharedDataDir = path.join(os.homedir(), "data");
+const sharedEnvFilePath = path.join(sharedDataDir, ".env");
 const setupDir = path.join(__dirname, "..", "lib", "setup");
+const templatePath = path.join(setupDir, "env.template");
 
-if (!fs.existsSync(envFilePath)) {
-  const templatePath = path.join(setupDir, "env.template");
-  if (fs.existsSync(templatePath)) {
-    fs.copyFileSync(templatePath, envFilePath);
-    console.log("[alphaclaw] Created .env from template");
+try {
+  if (!fs.existsSync(sharedEnvFilePath) && fs.existsSync(templatePath)) {
+    fs.mkdirSync(sharedDataDir, { recursive: true });
+    fs.copyFileSync(templatePath, sharedEnvFilePath);
+    console.log(`[alphaclaw] Created shared env at ${sharedEnvFilePath}`);
   }
+} catch (e) {
+  console.log(`[alphaclaw] Shared .env setup skipped: ${e.message}`);
 }
+
+// ---------------------------------------------------------------------------
+// 5. Symlink <root>/.env -> ~/data/.env when available
+// ---------------------------------------------------------------------------
+
+try {
+  if (!fs.existsSync(envFilePath) && fs.existsSync(sharedEnvFilePath)) {
+    fs.symlinkSync(sharedEnvFilePath, envFilePath);
+    console.log(`[alphaclaw] Symlinked ${envFilePath} -> ${sharedEnvFilePath}`);
+  }
+} catch (e) {
+  console.log(`[alphaclaw] .env symlink skipped: ${e.message}`);
+}
+
+// ---------------------------------------------------------------------------
+// 6. Load .env into process.env
+// ---------------------------------------------------------------------------
 
 if (fs.existsSync(envFilePath)) {
   const content = fs.readFileSync(envFilePath, "utf8");
@@ -135,14 +157,14 @@ if (fs.existsSync(envFilePath)) {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Set OPENCLAW_HOME globally so all child processes inherit it
+// 7. Set OPENCLAW_HOME globally so all child processes inherit it
 // ---------------------------------------------------------------------------
 
 process.env.OPENCLAW_HOME = rootDir;
 process.env.OPENCLAW_CONFIG_PATH = path.join(openclawDir, "openclaw.json");
 
 // ---------------------------------------------------------------------------
-// 6. Install gog (Google Workspace CLI) if not present
+// 8. Install gog (Google Workspace CLI) if not present
 // ---------------------------------------------------------------------------
 
 process.env.XDG_CONFIG_HOME = openclawDir;

@@ -99,10 +99,18 @@ describe("server/routes/system", () => {
     expect(res.body.vars.some((entry) => entry.key === "GITHUB_WORKSPACE_REPO")).toBe(
       false,
     );
+    expect(res.body.reservedKeys).toEqual(
+      expect.arrayContaining([
+        "PORT",
+        "SETUP_PASSWORD",
+        "GITHUB_WORKSPACE_REPO",
+        "GOG_KEYRING_PASSWORD",
+      ]),
+    );
     expect(res.body.restartRequired).toBe(false);
   });
 
-  it("filters system vars and syncs channels on PUT /api/env", async () => {
+  it("rejects reserved vars on PUT /api/env", async () => {
     const deps = createSystemDeps();
     deps.reloadEnv.mockReturnValue(true);
     deps.readEnvFile.mockReturnValue([
@@ -120,29 +128,29 @@ describe("server/routes/system", () => {
 
     const res = await request(app).put("/api/env").send(payload);
 
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({ ok: true, changed: true, restartRequired: true });
-    expect(deps.writeEnvFile).toHaveBeenCalledWith([
-      { key: "OPENAI_API_KEY", value: "abc" },
-      { key: "GITHUB_WORKSPACE_REPO", value: "owner/repo" },
-    ]);
-    expect(deps.syncChannelConfig).toHaveBeenNthCalledWith(
-      1,
-      [
-        { key: "OPENAI_API_KEY", value: "abc" },
-        { key: "GITHUB_WORKSPACE_REPO", value: "owner/repo" },
-      ],
-      "remove",
-    );
-    expect(deps.syncChannelConfig).toHaveBeenNthCalledWith(
-      2,
-      [
-        { key: "OPENAI_API_KEY", value: "abc" },
-        { key: "GITHUB_WORKSPACE_REPO", value: "owner/repo" },
-      ],
-      "add",
-    );
+    expect(res.status).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.error).toContain("Reserved environment variables cannot be edited");
+    expect(res.body.error).toContain("PORT");
+    expect(res.body.error).toContain("GITHUB_WORKSPACE_REPO");
+    expect(deps.writeEnvFile).not.toHaveBeenCalled();
+    expect(deps.syncChannelConfig).not.toHaveBeenCalled();
     expect(deps.restartGateway).not.toHaveBeenCalled();
+  });
+
+  it("rejects gog keyring password edits on PUT /api/env", async () => {
+    const deps = createSystemDeps();
+    const app = createApp(deps);
+
+    const res = await request(app).put("/api/env").send({
+      vars: [{ key: "GOG_KEYRING_PASSWORD", value: "changed" }],
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.error).toContain("GOG_KEYRING_PASSWORD");
+    expect(deps.writeEnvFile).not.toHaveBeenCalled();
+    expect(deps.syncChannelConfig).not.toHaveBeenCalled();
   });
 
   it("does not restart gateway when env is unchanged", async () => {

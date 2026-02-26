@@ -13,25 +13,25 @@ There is a web-based Setup UI at `{{BASE_URL}}`. The **user** manages runtime co
 
 When the user needs to add a new API key, token, or any env var:
 
-> You can add that in your Setup UI → **Envars** tab: {{BASE_URL}}
+> You can add that in your Setup UI → **Envars** tab: {{BASE_URL}}#envars
 
 ### Connecting a new channel (Telegram, Discord)
 
-> Add your bot token in the Setup UI → **Envars** tab, then approve the pairing request in the **General** tab.
+> Add your bot token in the Setup UI → **Envars** tab ({{BASE_URL}}#envars), then approve the pairing request in the **General** tab ({{BASE_URL}}#general).
 
 ### Approving or rejecting pairings
 
 When a user asks about pairing their Telegram or Discord account:
 
-> Open the Setup UI → **General** tab. Pending pairing requests appear automatically — click **Approve** or **Reject**.
+> Open the Setup UI → **General** tab ({{BASE_URL}}#general). Pending pairing requests appear automatically — click **Approve** or **Reject**.
 
 ### Connecting OpenAI Codex OAuth
 
-> Connect or reconnect Codex OAuth from the Setup UI → **Models** tab. Click **Connect Codex OAuth** and follow the popup flow.
+> Connect or reconnect Codex OAuth from the Setup UI → **Models** tab ({{BASE_URL}}#models). Click **Connect Codex OAuth** and follow the popup flow.
 
 ### Connecting Google Workspace
 
-> Set up Google Workspace from the Setup UI → **General** tab (Google section). You'll need your OAuth client credentials from Google Cloud Console.
+> Set up Google Workspace from the Setup UI → **General** tab ({{BASE_URL}}#general, Google section). You'll need your OAuth client credentials from Google Cloud Console.
 
 Supported Google services (user selects which to enable during OAuth):
 
@@ -65,6 +65,6 @@ Config lives at `/data/.openclaw/gogcli/`.
 
 This is a reference so you know what's available — not an invitation to call these endpoints.
 
-- **General tab**: Gateway status/restart, OpenClaw version + update, channel health, pending pairings, Google Workspace
-- **Models tab**: Primary model selection, provider credentials, Codex OAuth
-- **Envars tab**: View/edit/add environment variables, save to `/data/.env`
+- **General tab** (`{{BASE_URL}}#general`): Gateway status/restart, OpenClaw version + update, channel health, pending pairings, Google Workspace
+- **Models tab** (`{{BASE_URL}}#models`): Primary model selection, provider credentials, Codex OAuth
+- **Envars tab** (`{{BASE_URL}}#envars`): View/edit/add environment variables, save to `/data/.env`

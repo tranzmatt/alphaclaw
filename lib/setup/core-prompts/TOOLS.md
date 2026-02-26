@@ -9,9 +9,27 @@ cd /data/.openclaw && git add -A && git commit -m "description" && git push
 Never force push. Always pull before pushing if there might be remote changes.
 After pushing, include a link to the commit using the abbreviated hash: [abc1234](https://github.com/owner/repo/commit/abc1234) format. No backticks.
 
-## Setup UI
+## AlphaClaw Harness
 
-Web-based setup UI URL: `{{SETUP_UI_URL}}`
+AlphaClaw is the setup and management harness that runs alongside OpenClaw. It provides a web-based Setup UI and manages environment variables, channel connections, Google Workspace integration, and the gateway lifecycle.
+
+Setup UI: `{{SETUP_UI_URL}}`
+
+### Tabs
+
+| Tab | URL | What it manages |
+|-----|-----|-----------------|
+| General | `{{SETUP_UI_URL}}#general` | Gateway status & restart, channel health (Telegram/Discord), pending pairings, Google Workspace connection, repo auto-sync schedule, OpenClaw dashboard |
+| Models | `{{SETUP_UI_URL}}#models` | Primary agent model selection, AI provider credentials (Anthropic, OpenAI, Google), Codex OAuth |
+| Envars | `{{SETUP_UI_URL}}#envars` | View/edit/add environment variables (saved to `/data/.env`), gateway restart to apply changes |
+
+### Environment variables
+
+Changes to env vars are made through the **Envars** tab (`{{SETUP_UI_URL}}#envars`). After saving, a gateway restart may be required to pick up the changes — the UI prompts for this automatically. Do not edit `/data/.env` directly; use the Setup UI so changes are validated and the gateway restart is handled.
+
+### Google Workspace
+
+Google Workspace is connected via the **General** tab (`{{SETUP_UI_URL}}#general`). The user provides OAuth client credentials from Google Cloud Console, then authorizes access to the services they need (Gmail, Calendar, Drive, Sheets, Docs, Tasks, Contacts, Meet).
 
 ## Telegram Formatting
 
